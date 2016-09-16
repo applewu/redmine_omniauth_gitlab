@@ -1,0 +1,10 @@
+<%= stylesheet_link_tag 'buttons', :plugin => 'redmine_omniauth_gitlab' %>
+
+<% if Setting.plugin_redmine_omniauth_gitlab[:oauth_authentification] %>
+  <%= link_to oauth_gitlab_path(:back_url => back_url) do %>
+    <%= button_tag :class => 'button-login' do %>
+      <%= image_tag('/plugin_assets/redmine_omniauth_gitlab/images/gitlab_login_icon.png', :class => 'button-login-icon', :alt => l(:login_via_gitlab)) %>
+      <%= content_tag :div, l(:login_via_gitlab), :class => 'button-login-text' %>
+    <% end %>
+  <% end %>
+<% end %>
