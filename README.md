@@ -2,6 +2,8 @@
 
 This plugin is used to authenticate Redmine users using gitlab's OAuth2 provider.
 
+The major logic as similar as [redmine_omniauth_google](https://github.com/twinslash/redmine_omniauth_google)
+
 ### Installation:
 
 Download the plugin and install required gems:
