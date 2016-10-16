@@ -23,12 +23,12 @@ class RedmineOauthController < AccountController
       result = token.get( settings[:site]+'/api/v3/user')
       info = JSON.parse(result.body)
       puts(info)
-      puts(info["username"])
-      if info && info["username"]
-        if allowed_domain_for?(info["username"])
+      puts("email : " + info["email"])
+      if info && info["email"]
+        if allowed_domain_for?(info["email"])
           try_to_login info
         else
-          flash[:error] = l(:notice_domain_not_allowed, :domain => parse_email(info["username"])[:domain])
+          flash[:error] = l(:notice_domain_not_allowed, :domain => parse_email(info["email"])[:domain])
           redirect_to signin_path
         end
       else
@@ -50,8 +50,7 @@ class RedmineOauthController < AccountController
       user.firstname ||= info[:given_name]
       user.lastname ||= info[:family_name]
       user.mail = info["email"]
-      user.login = parse_email(info["email"])[:login]
-      user.login ||= [user.firstname, user.lastname]*"."
+      user.login = info["username"]
       user.random_password
       user.register
 
@@ -89,8 +88,8 @@ class RedmineOauthController < AccountController
     @client ||= OAuth2::Client.new(settings[:client_id], settings[:client_secret],
                                    :token_method => :post,
                                    :site => settings[:site],
-                                   :authorize_url => '/oauth/authorize',
-                                   :token_url => '/oauth/token'
+                                   :authorize_url => settings[:site] + '/oauth/authorize',
+                                   :token_url => settings[:site] + '/oauth/token'
     )
   end
 
