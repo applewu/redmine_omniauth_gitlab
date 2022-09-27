@@ -1,5 +1,4 @@
 require 'redmine'
-require_dependency 'redmine_omniauth_gitlab/hooks'
 
 Redmine::Plugin.register :redmine_omniauth_gitlab do
   name 'Redmine Omniauth gitlab plugin'
