@@ -1,1 +1,42 @@
-.idea/*
+# ===== macOS =====
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ===== IDE / Editor =====
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# ===== Ruby / Bundler =====
+/.bundle/
+/vendor/bundle/
+*.gem
+/.rvmrc
+/.ruby-version
+.byebug_history
+
+# ===== Gem build artifacts =====
+/pkg/
+/tmp/
+
+# ===== Test / Coverage =====
+/coverage/
+/spec/reports/
+/test/tmp/
+.rspec_status
+
+# ===== Environment / secrets =====
+.env
+.env.*
+
+# ===== Logs =====
+*.log
+
+# 本项目是开源 gem（且作为 Redmine 插件由主应用统一解析依赖），
+# 按惯例不提交 Gemfile.lock，让使用者自行解析版本组合。
+/Gemfile.lock
