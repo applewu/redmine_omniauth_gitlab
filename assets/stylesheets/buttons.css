@@ -1,23 +1,43 @@
-.button-login {
-  position: relative;
-  left: 45%;
-  display: inline-block;
-  border: 1px solid #999;
-  border-radius: 2px;
-  margin-top: 10px;
-  width: 135px;
-  height: 25px;
-  padding: 0;
+.gitlab-login {
+  display: flex;
+  justify-content: center;
+  margin: 16px 0;
 }
 
-.button-login-icon {
-  float: left;
-  height: 18px;
-  padding: 1px 0px 0px 4px;
+a.gitlab-login-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-sizing: border-box;
+  min-height: 38px;
+  max-width: 100%;
+  padding: 8px 16px;
+  border: 1px solid #b5b5b5;
+  border-radius: 4px;
+  background: #fff;
+  color: #333;
+  font-size: 13px;
+  line-height: 20px;
+  text-decoration: none;
 }
 
-.button-login-text {
-  line-height: 21px;
-  background-image: -webkit-linear-gradient(bottom, #ddd, white);
-  font-size: 12px;
+a.gitlab-login-button:hover {
+  background: #f3f3f3;
+  border-color: #888;
+  color: #222;
+  text-decoration: none;
+}
+
+a.gitlab-login-button:focus-visible {
+  outline: 2px solid #169;
+  outline-offset: 3px;
+}
+
+.gitlab-login-icon {
+  display: block;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  object-fit: contain;
 }

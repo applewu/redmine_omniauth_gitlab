@@ -12,7 +12,7 @@ Redmine::Plugin.register :redmine_omniauth_gitlab do
     :site => "",
     :client_id => "",
     :client_secret => "",
-    :oauth_autentification => false,
+    :oauth_authentification => false,
     :allowed_domains => ""
   }, :partial => 'settings/gitlab_settings'
 end

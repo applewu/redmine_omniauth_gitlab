@@ -1,29 +1,40 @@
 require 'account_controller'
 require 'json'
+require 'oauth2'
+require 'securerandom'
 
 class RedmineOauthController < AccountController
   include Helpers::MailHelper
   include Helpers::Checker
 
   def oauth_gitlab
-    if Setting.plugin_redmine_omniauth_gitlab[:oauth_authentification]
+    if settings[:oauth_authentification]
       session[:back_url] = params[:back_url]
-      redirect_to oauth_client.auth_code.authorize_url(:redirect_uri => oauth_gitlab_callback_url)
+      session[:gitlab_oauth_state] = SecureRandom.hex(32)
+      redirect_to oauth_client.auth_code.authorize_url(:redirect_uri => oauth_gitlab_callback_url, :state => session[:gitlab_oauth_state], :scope => 'read_user'), :allow_other_host => true
     else
       password_authentication
     end
   end
 
   def oauth_gitlab_callback
+    expected_state = session.delete(:gitlab_oauth_state)
+    received_state = params[:state]
+    unless settings[:oauth_authentification] && expected_state.is_a?(String) &&
+        received_state.is_a?(String) && received_state.bytesize == expected_state.bytesize &&
+        ActiveSupport::SecurityUtils.secure_compare(received_state, expected_state)
+      flash[:error] = l(:notice_access_denied)
+      redirect_to signin_path
+      return
+    end
+
     if params[:error]
       flash[:error] = l(:notice_access_denied)
       redirect_to signin_path
     else
       token = oauth_client.auth_code.get_token(params[:code], :redirect_uri => oauth_gitlab_callback_url)
-      result = token.get( settings[:site]+'/api/v3/user')
-      info = JSON.parse(result.body)
-      puts(info)
-      puts("email : " + info["email"])
+      result = token.get('/api/v4/user')
+      info = result.parsed
       if info && info["email"]
         if allowed_domain_for?(info["email"])
           try_to_login info
@@ -41,7 +52,7 @@ class RedmineOauthController < AccountController
   def try_to_login info
     params[:back_url] = session[:back_url]
     session.delete(:back_url)
-    user = User.joins(:email_addresses).where(:email_addresses => {:address => info["email"]}).first_or_create
+    user = User.joins(:email_addresses).where(:email_addresses => {:address => info["email"]}).first_or_initialize
     if user.new_record?
       # Self-registration off
       redirect_to(home_url) && return unless Setting.self_registration?
@@ -94,7 +105,7 @@ class RedmineOauthController < AccountController
   end
 
   def settings
-    @settings ||= Setting.plugin_redmine_omniauth_gitlab
+    @settings ||= Setting.plugin_redmine_omniauth_gitlab.with_indifferent_access
   end
 
 end
